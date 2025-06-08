@@ -1,0 +1,9 @@
+This is the way we will protect our vault information. we will have this
+method of protecting ourselves from people reading our encrypted passcodes.
+
+Since I am too lazy for SQL, we are going to have to make this work with reading
+files.
+
+<salt>.<vault pass>.<encryption key>
+/<site>.<username>.<password>.<date>/
+...
