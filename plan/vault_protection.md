@@ -6,7 +6,7 @@ Since I am too lazy for SQL, we are going to have to make this work with reading
 files. The vault key will be a SHA256 hash of salt + key. This key will be used to decrypt our values. This key should probably be rotated over time.
 
 ```
-<salt>|<vault_key>
+<salt>:<vault_key>
 ~<site>|<username>|<password>|<date>~
 ~<site>|<username>|<password>|<date>~
 ```
