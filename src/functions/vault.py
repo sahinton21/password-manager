@@ -97,10 +97,10 @@ def create_vault(vault_name, password):
   # attempt to create a new file. If we fail then return an error message. People could attempt to use this function to do something evil since we are using os commands
   if not check_valid_filename(vault_name) or check_vault_exists(vault_name):
     error_message= f"Invalid character in name or name already in use"
-    raise Exception()
+    raise Exception(error_message)
 
   # Create a vault now
-  vault = open(vault_name, "w")
+  vault = open(f"./{vault_name}.valt", "w")
 
   if not vault:
     raise Exception("Unable to create a vault")
@@ -123,10 +123,42 @@ def create_vault(vault_name, password):
   os.system(f'attrib +h "{vault_name}"')
 
 
-def edit_vault_key(vault_name, password):
+def edit_vault_password(vault_name, old_password, new_password):
   '''
-  Swap out the vault key.
+  Swap out the vault password with a new one
   '''
+  if not check_vault_exists(vault_name):
+    error_message= f"No vault with the name {vault_name} was found"
+    raise FileNotFoundError(error_message)
+
+  
+  if not check_password(vault_name, old_password):
+    raise Exception("Incorrect password")
+
+
+
+  file = open(f"./{vault_name}.valt", "r")
+
+  vault_creds = file.readline()
+  remainder = file.read()
+
+  file.close()
+
+  file = open(f"./{vault_name}.valt", "w")
+
+
+
+  # Swap out the vault salt and hashed password
+  salt = generate_salt()
+
+  hashed_password = hash_password_and_salt(new_password, salt)
+
+  file.write(f"{salt}:{hashed_password}\n")
+  file.write(remainder)
+
+
+  file.close()
+
 
 def delete_vault(vault_name, password):
   '''
@@ -134,10 +166,12 @@ def delete_vault(vault_name, password):
   '''
 
   # check if the file exists
-  if  not check_valid_filename(vault_name):
+  if  not check_vault_exists(vault_name):
     error_message= f"No vault with the name {vault_name} was found"
     raise FileNotFoundError(error_message)
   
   # Make sure the password matches what is found in the vault. Delete if the keys match
   if check_password(vault_name, password):
     os.remove(f"./{vault_name}.valt")
+
+  raise Exception("Incorrect password")
