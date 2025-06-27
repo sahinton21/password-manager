@@ -56,9 +56,6 @@ def check_password( vault_name, password_attempt):
   # Check the password attempt against the truth
   hash_attempt = hash_password_and_salt(password_attempt, salt)
 
-  print(hash_attempt)
-  print(hash_password)
-
   if hash_password == hash_attempt:
     return True
   return False
